@@ -25,9 +25,14 @@ build/
 .DS_Store
 Thumbs.db
 
-# Data files (optional - uncomment if you don't want to commit CSV files)
-# *.csv
-# *.xlsx
+# Data files
+*.csv
+*.xlsx
+*.zip
 
 # Logs
 *.log
+
+# Temporary files
+*.tmp
+*.bak
