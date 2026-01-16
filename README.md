@@ -52,9 +52,10 @@ run_prophet_app.bat
    - Repository: `prophet_dd_fs_app`
    - Branch: `main`
    - **Main file path:** `prophet_forecast_app.py`
+   - **Python version:** 3.9 or higher (if prompted)
    - App URL: Choose a name (e.g., `prophet-dd-fs-app`)
 6. **Click "Deploy"**
-7. **Wait 2-5 minutes** for deployment (Prophet installation takes time)
+7. **Wait 5-10 minutes** for deployment (Prophet installation takes time - CmdStan needs to compile)
 
 Your app will be available at: `https://[your-app-name].streamlit.app`
 

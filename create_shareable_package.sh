@@ -18,11 +18,11 @@ mkdir -p "$PACKAGE_NAME"
 echo "📋 Copying files..."
 cp prophet_forecast_app.py "$PACKAGE_NAME/"
 cp requirements_prophet_app.txt "$PACKAGE_NAME/"
+cp README.md "$PACKAGE_NAME/"
 cp LAUNCH_APP.command "$PACKAGE_NAME/"
 cp LAUNCH_APP.bat "$PACKAGE_NAME/"
-cp README_prophet_app.md "$PACKAGE_NAME/"
-cp DOUBLE_CLICK_GUIDE.md "$PACKAGE_NAME/"
-cp QUICK_START.md "$PACKAGE_NAME/" 2>/dev/null || true
+cp run_prophet_app.sh "$PACKAGE_NAME/" 2>/dev/null || true
+cp run_prophet_app.bat "$PACKAGE_NAME/" 2>/dev/null || true
 
 # Make launchers executable
 chmod +x "$PACKAGE_NAME/LAUNCH_APP.command"
@@ -58,8 +58,8 @@ Windows Users:
   • Configure settings and generate forecasts!
 
 ❓ NEED HELP?
-  • See README_prophet_app.md for detailed instructions
-  • See DOUBLE_CLICK_GUIDE.md for troubleshooting
+  • See README.md for detailed instructions
+  • Check the README for troubleshooting tips
 
 EOF
 
