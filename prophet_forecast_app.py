@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import io
+import os
 
 # Check if Prophet is installed
 try:
@@ -131,10 +132,53 @@ if uploaded_file is not None:
         use_custom_holidays = st.sidebar.checkbox("Upload Custom Holidays CSV", value=False)
         custom_holidays_file = None
         if use_custom_holidays:
+            # Show example holidays format
+            with st.sidebar.expander("📝 Holidays CSV Format", expanded=False):
+                st.markdown("""
+                Your holidays CSV should have the following columns:
+                
+                | holiday | ds | lower_window | upper_window |
+                |---------|----|--------------|--------------|
+                | Super Bowl | 2/12/23 | 0 | 0 |
+                | Black Friday | 11/24/23 | 0 | 3 |
+                | Easter | 4/9/23 | -2 | 0 |
+                
+                **Column Requirements:**
+                - **holiday**: Name of the holiday (required)
+                - **ds**: Date of the holiday (M/D/YY or YYYY-MM-DD format) (required)
+                - **lower_window**: Days before the holiday to include (optional, default: 0)
+                - **upper_window**: Days after the holiday to include (optional, default: 0)
+                
+                **Window Examples:**
+                - Black Friday with `upper_window=3` → affects holiday + 3 days after
+                - Easter with `lower_window=-2` → affects 2 days before + holiday
+                
+                **Tips:** Download the example file below to see a full year of holidays with proper formatting.
+                """)
+                
+                # Load and provide example holidays CSV
+                try:
+                    # Get the directory where the script is located
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    example_file_path = os.path.join(script_dir, 'example_holidays.csv')
+                    with open(example_file_path, 'r') as f:
+                        example_holidays_csv = f.read()
+                    st.download_button(
+                        label="📥 Download Example Holidays CSV",
+                        data=example_holidays_csv,
+                        file_name="example_holidays.csv",
+                        mime="text/csv",
+                        use_container_width=True
+                    )
+                except FileNotFoundError:
+                    st.info("Example file not found. Please check the app directory.")
+                except Exception as e:
+                    st.info(f"Could not load example file: {str(e)}")
+            
             custom_holidays_file = st.sidebar.file_uploader(
                 "Upload Holidays CSV",
                 type=['csv'],
-                help="CSV with 'ds' (date) and optionally 'holiday' (name) columns"
+                help="CSV with 'holiday', 'ds', 'lower_window', and 'upper_window' columns. Download example above."
             )
         
         # Forecast settings
@@ -206,9 +250,15 @@ if uploaded_file is not None:
                     if use_custom_holidays and custom_holidays_file is not None:
                         try:
                             holidays_df = pd.read_csv(custom_holidays_file)
-                            holidays_df['ds'] = pd.to_datetime(holidays_df['ds'])
-                            m.holidays = holidays_df
-                            st.sidebar.success(f"✅ Loaded {len(holidays_df)} custom holidays")
+                            # Parse dates with infer_datetime_format for flexibility
+                            holidays_df['ds'] = pd.to_datetime(holidays_df['ds'], infer_datetime_format=True)
+                            
+                            # Validate required columns
+                            if 'holiday' not in holidays_df.columns or 'ds' not in holidays_df.columns:
+                                st.sidebar.error("❌ Holidays CSV must have 'holiday' and 'ds' columns")
+                            else:
+                                m.holidays = holidays_df
+                                st.sidebar.success(f"✅ Loaded {len(holidays_df)} custom holidays")
                         except Exception as e:
                             st.sidebar.warning(f"⚠️ Could not load custom holidays: {str(e)}")
                     

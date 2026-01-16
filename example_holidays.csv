@@ -1,0 +1,55 @@
+holiday,ds,lower_window,upper_window
+Super Bowl,2/12/23,0,0
+Valentine's Day,2/14/23,0,0
+Saint Patrick,3/17/23,0,0
+Easter,4/9/23,-2,0
+Cinco de Mayo,5/5/23,0,0
+Mother's Day,5/14/23,0,0
+Father's Day,6/18/23,-1,0
+Halloween,10/31/23,0,1
+Thanksgiving Eve,11/22/23,0,0
+Black Friday,11/24/23,0,3
+Christmas Eve,12/24/23,0,0
+Post Christmas,12/26/23,0,1
+New Year's Eve,12/31/23,0,0
+Super Bowl,2/11/24,0,0
+Valentine's Day,2/14/24,0,0
+Saint Patrick,3/17/24,0,0
+Easter,3/31/24,-2,0
+Cinco de Mayo,5/5/24,0,0
+Mother's Day,5/12/24,0,0
+Father's Day,6/16/24,-1,0
+Halloween,10/31/24,0,1
+Thanksgiving Eve,11/27/24,0,0
+Black Friday,11/29/24,0,3
+Christmas Eve,12/24/24,0,0
+Post Christmas,12/26/24,0,1
+New Year's Eve,12/31/24,0,0
+Super Bowl,2/9/25,0,0
+Valentine's Day,2/14/25,0,0
+Saint Patrick,3/17/25,0,0
+Easter,4/20/25,-2,0
+Cinco de Mayo,5/5/25,0,0
+Mother's Day,5/11/25,0,0
+Father's Day,6/15/25,-1,0
+Post July 4th,7/5/25,0,1
+Halloween,10/31/25,0,1
+Thanksgiving Eve,11/26/25,0,0
+Black Friday,11/28/25,0,3
+Christmas Eve,12/24/25,0,0
+Post Christmas,12/26/25,0,1
+New Year's Eve,12/31/25,0,0
+Super Bowl,2/8/26,0,0
+Valentine's Day,2/14/26,0,0
+Saint Patrick,3/17/26,0,0
+Easter,4/5/26,-2,0
+Cinco de Mayo,5/5/26,0,0
+Mother's Day,5/10/26,0,0
+Father's Day,6/21/26,-1,0
+Post July 4th,7/5/26,0,1
+Halloween,10/31/26,0,1
+Thanksgiving Eve,11/25/26,0,0
+Black Friday,11/27/26,0,3
+Christmas Eve,12/24/26,0,0
+Post Christmas,12/26/26,0,1
+New Year's Eve,12/31/26,0,0
