@@ -91,6 +91,21 @@ def prepare_data(df):
     df = df.sort_values('ds').reset_index(drop=True)
     return df
 
+def detect_data_frequency(df):
+    """Detect if data is sub-daily (hourly) or daily+."""
+    if len(df) < 2:
+        return "unknown"
+    
+    # Calculate time differences
+    time_diffs = df['ds'].diff().dropna()
+    median_diff = time_diffs.median()
+    
+    # If median difference is less than 1 day, it's sub-daily
+    if median_diff < pd.Timedelta(days=1):
+        return "sub-daily"
+    else:
+        return "daily-or-more"
+
 if uploaded_file is not None:
     # Read CSV
     try:
@@ -113,17 +128,64 @@ if uploaded_file is not None:
         # Prepare data
         prepared_df = prepare_data(data_df)
         
+        # Detect data frequency
+        data_freq = detect_data_frequency(prepared_df)
+        
         # Model configuration in sidebar
         st.sidebar.subheader("Seasonality Settings")
+        
+        # Add seasonality explanation
+        with st.sidebar.expander("ℹ️ What is Seasonality?", expanded=False):
+            st.markdown("""
+            Seasonality captures repeating patterns in your data:
+            
+            **📅 Yearly Seasonality**
+            - Captures annual patterns (e.g., Q4 spikes, summer dips)
+            - Best for: Daily, weekly, or monthly data
+            - Use when: Data spans multiple years
+            
+            **📆 Weekly Seasonality**
+            - Captures day-of-week patterns (e.g., weekend vs weekday)
+            - Best for: Daily or hourly data
+            - Use when: You expect different patterns by day of week
+            
+            **🕐 Daily Seasonality**
+            - Captures hour-of-day patterns (e.g., lunch rush, evening peak)
+            - **Requires: Sub-daily (hourly) data**
+            - Use when: Your data includes time-of-day timestamps
+            - ⚠️ Only enable if you have hourly/minute-level data
+            
+            **Seasonality Mode:**
+            - **Additive**: Seasonal effects stay constant over time
+            - **Multiplicative**: Seasonal effects grow proportionally with the trend
+            """)
+        
         seasonality_mode = st.sidebar.selectbox(
             "Seasonality Mode",
             ['additive', 'multiplicative'],
-            help="Additive: constant seasonal fluctuations. Multiplicative: seasonal fluctuations grow with level."
+            help="Additive: constant seasonal fluctuations. Multiplicative: seasonal effects scale with trend level."
         )
         
-        daily_seasonality = st.sidebar.checkbox("Daily Seasonality", value=False)
-        weekly_seasonality = st.sidebar.checkbox("Weekly Seasonality", value=True)
-        yearly_seasonality = st.sidebar.checkbox("Yearly Seasonality", value=True)
+        daily_seasonality = st.sidebar.checkbox(
+            "Daily Seasonality",
+            value=False,
+            help="⚠️ For HOURLY data only - captures hour-of-day patterns (e.g., 9am spike, 5pm peak)"
+        )
+        
+        # Warning if daily seasonality is enabled but data is not sub-daily
+        if daily_seasonality and data_freq == "daily-or-more":
+            st.sidebar.warning("⚠️ **Daily Seasonality Warning**: Your data appears to be daily or less frequent. Daily seasonality is only useful for hourly/sub-daily data.")
+        
+        weekly_seasonality = st.sidebar.checkbox(
+            "Weekly Seasonality",
+            value=True,
+            help="Captures day-of-week patterns (e.g., Monday vs Sunday behavior)"
+        )
+        yearly_seasonality = st.sidebar.checkbox(
+            "Yearly Seasonality",
+            value=True,
+            help="Captures annual patterns (e.g., holiday seasons, quarterly cycles)"
+        )
         
         # Holidays configuration
         st.sidebar.subheader("Holidays")
