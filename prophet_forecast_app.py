@@ -31,6 +31,11 @@ except ImportError:
 
 import plotly.graph_objects as go
 
+try:
+    from country_holidays_config import get_country_holiday_choices
+except ImportError:
+    get_country_holiday_choices = None
+
 # Page configuration
 st.set_page_config(
     page_title="Prophet Forecast Generator",
@@ -189,7 +194,23 @@ if uploaded_file is not None:
         
         # Holidays configuration
         st.sidebar.subheader("Holidays")
-        use_us_holidays = st.sidebar.checkbox("Include US Holidays", value=True)
+        
+        # Country holidays dropdown (display name in UI, ISO code in backend)
+        if get_country_holiday_choices is not None:
+            country_choices = get_country_holiday_choices()
+            country_options = [label for label, _ in country_choices]
+            label_to_code = {label: code for label, code in country_choices}
+            default_index = 0  # United States first
+            selected_country_label = st.sidebar.selectbox(
+                "Country holidays",
+                options=country_options,
+                index=default_index,
+                help="Select a country to include its public holidays in the model. Uses Prophet's built-in holiday calendar (ISO country code in backend)."
+            )
+            selected_country_code = label_to_code.get(selected_country_label, "US")
+        else:
+            selected_country_code = "US"
+            st.sidebar.info("Using United States holidays (country list unavailable).")
         
         use_custom_holidays = st.sidebar.checkbox("Upload Custom Holidays CSV", value=False)
         custom_holidays_file = None
@@ -304,9 +325,9 @@ if uploaded_file is not None:
                         holidays_prior_scale=holidays_prior_scale
                     )
                     
-                    # Add US holidays if selected
-                    if use_us_holidays:
-                        m.add_country_holidays(country_name='US')
+                    # Add country holidays if a country is selected (backend uses ISO code)
+                    if selected_country_code is not None:
+                        m.add_country_holidays(country_name=selected_country_code)
                     
                     # Add custom holidays if provided
                     if use_custom_holidays and custom_holidays_file is not None:
