@@ -292,6 +292,15 @@ if uploaded_file is not None:
                 help="Flexibility of trend changes"
             )
             
+            changepoint_range = st.slider(
+                "Changepoint Range",
+                min_value=0.2,
+                max_value=1.0,
+                value=0.8,
+                step=0.05,
+                help="Share of history (from the start) where automatic trend changepoints may be placed. Lower = smoother tail, fewer kinks near the end; higher = changepoints allowed closer to the latest data."
+            )
+            
             seasonality_prior_scale = st.slider(
                 "Seasonality Prior Scale",
                 min_value=0.01,
@@ -321,6 +330,7 @@ if uploaded_file is not None:
                         weekly_seasonality=weekly_seasonality,
                         yearly_seasonality=yearly_seasonality,
                         changepoint_prior_scale=changepoint_prior_scale,
+                        changepoint_range=changepoint_range,
                         seasonality_prior_scale=seasonality_prior_scale,
                         holidays_prior_scale=holidays_prior_scale
                     )
